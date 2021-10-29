@@ -7,22 +7,27 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         SizeChanged="Window_SizeChanged">
-    <ScrollViewer x:Name="scrollingbar" VerticalScrollBarVisibility="Visible">
-        <Grid>
-        <Grid.Background>
-            <SolidColorBrush Color="Black"></SolidColorBrush>
-        </Grid.Background>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock Foreground="WhiteSmoke" Grid.Row="0" x:Name="titlebar" FontSize="32">Directory</TextBlock>
-        
-        <Canvas Grid.Row="1" x:Name="LayoutRoot">
-            
-        </Canvas>
-        
-    </Grid>
-    </ScrollViewer>
+    <ScrollViewer x:Name="scrollingbar" VerticalScrollBarVisibility="Auto">
 
+        <Grid>
+            <Grid.Background>
+                <SolidColorBrush Color="Black"></SolidColorBrush>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Foreground="WhiteSmoke" Grid.Row="0" x:Name="titlebar" FontSize="32">Directory</TextBlock>
+            
+            <Canvas Grid.Row="1" x:Name="LayoutRoot">
+                <Canvas.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Copy"></MenuItem>
+                        <MenuItem Header="Paste"></MenuItem>
+                    </ContextMenu>
+                </Canvas.ContextMenu>
+            </Canvas>
+            
+        </Grid>
+    </ScrollViewer>
 </Window>

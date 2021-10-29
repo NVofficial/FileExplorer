@@ -27,45 +27,30 @@ namespace FileBrowser
         public double btnW = 100;
         private void renderButtons(string direct)
         {
+            
             titlebar.Text = direct;
             var dirs = from dir in Directory.EnumerateDirectories(direct) select dir;
-            Button[] x = new Button[dirs.Count()];
-            int jump = 50;
-            int down = 0;
             foreach (int y in Enumerable.Range(0, dirs.Count()))
             {
-                Button tempbutton = new Button();
+                Button tempbutton = Button_creator();
                 tempbutton.Width = 100;
                 tempbutton.Height = 100;
                 tempbutton.Click += button_click;
                 tempbutton.Background = folderImage;
                 tempbutton.Foreground = Brushes.White;
-                if (jump > 700)
-                {
-                    jump = 50;
-                    down += 100;
-                }
-                Canvas.SetLeft(tempbutton, jump);
-                Canvas.SetTop(tempbutton, down);
                 tempbutton.Content = dirs.ElementAt(y);
                 buttonlist.Add(tempbutton);
                 LayoutRoot.Children.Add(buttonlist.Last());
-                jump += 100;
             }
         }
-        private void renderButtons(double _h,double _w)
+        private void RerenderButtons(double _h,double _w)
         {
             double jump = btnW;
             double down = 0;
             var dirs = from dir in Directory.EnumerateDirectories(direct) select dir;
-            foreach (int y in Enumerable.Range(0, dirs.Count()))
+            foreach (Button tempbutton in buttonlist)
             {
-                Button tempbutton = new Button();
-                tempbutton.Width = btnW;
-                tempbutton.Height = btnH;
-                tempbutton.Click += button_click;
-                tempbutton.Background = folderImage;
-                tempbutton.Foreground = Brushes.White;
+                button_customizer(tempbutton);
                 if (jump+2*btnW > _w)
                 {
                     jump = btnW;
@@ -73,9 +58,6 @@ namespace FileBrowser
                 }
                 Canvas.SetLeft(tempbutton, jump);
                 Canvas.SetTop(tempbutton, down);
-                tempbutton.Content = dirs.ElementAt(y);
-                buttonlist.Add(tempbutton);
-                LayoutRoot.Children.Add(buttonlist.Last());
                 jump += btnW;
             }
             scrollingbar.Height = _h;
@@ -94,21 +76,42 @@ namespace FileBrowser
             {
                 LayoutRoot.Children.Remove(butt);
             }
+            buttonlist.Clear();
         }
-        private Button button_creator()
+        private Button Button_creator()
         {
-            Button tempbutton = new Button();
-            tempbutton.Width = 100;
-            tempbutton.Height = 100;
+            return button_customizer(new Button());
+        }
+        private Button button_customizer(Button tempbutton)
+        {
+            tempbutton.Width = 90;
+            tempbutton.Height = 90;
             tempbutton.Click += button_click;
             tempbutton.Background = folderImage;
             tempbutton.Foreground = Brushes.White;
+            tempbutton.BorderThickness = new Thickness(0);
+            tempbutton.ContextMenu = RightClickMenu(new ContextMenu());
             return tempbutton;
         }
 
         public string direct = "D:";
+        private ContextMenu RightClickMenu(ContextMenu tempContext)
+        {
+            MenuItem Cpybtn = new MenuItem();
+            Cpybtn.Header = "Copy";
+            Cpybtn.Click += Cpybtn_Click;
+            tempContext.Items.Add(Cpybtn);
+            return tempContext;
+        }
+
+        private void Cpybtn_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(sender.ToString());
+        }
+
         public MainWindow()
         {
+            ContextMenu buttonContext = new ContextMenu();
             InitializeComponent();
             titlebar.Text = direct;
             var dirs = from dir in Directory.EnumerateFileSystemEntries(direct) select dir;
@@ -116,15 +119,14 @@ namespace FileBrowser
             folderImage.ImageSource = new BitmapImage(new Uri("C:/Users\\Nandan Varma\\Desktop\\csharpfilebrowser\\FileBrowser\\FileBrowser\\images\\folder.png"));
             int jump = 30;
             int down = 0;
-            
             foreach (int y in Enumerable.Range(0, dirs.Count()))
             {
                 if (jump > 700)
                 {
-                    jump =30;
+                    jump = 30;
                     down += 100;
                 }
-                Button tempbutton = button_creator();
+                Button tempbutton = Button_creator();
                 Canvas.SetLeft(tempbutton, jump);
                 Canvas.SetTop(tempbutton, down);
                 tempbutton.Content = dirs.ElementAt(y);
@@ -136,8 +138,7 @@ namespace FileBrowser
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            unrenderButtons();
-            renderButtons((sender as Window).Height,(sender as Window).Width);
+            RerenderButtons((sender as Window).Height,(sender as Window).Width);
             
         }
     }

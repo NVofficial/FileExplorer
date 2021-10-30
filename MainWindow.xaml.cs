@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Threading;
 
 namespace FileBrowser
 {
@@ -23,6 +24,7 @@ namespace FileBrowser
     {
         public ImageBrush folderImage = new ImageBrush();
         public List<Button> buttonlist = new List<Button>();
+        public List<Thread> threadlist = new List<Thread>();
         public double btnH = 100;
         public double btnW = 100;
         private void renderButtons(string direct)
@@ -33,11 +35,6 @@ namespace FileBrowser
             foreach (int y in Enumerable.Range(0, dirs.Count()))
             {
                 Button tempbutton = Button_creator();
-                tempbutton.Width = 100;
-                tempbutton.Height = 100;
-                tempbutton.Click += button_click;
-                tempbutton.Background = folderImage;
-                tempbutton.Foreground = Brushes.White;
                 tempbutton.Content = dirs.ElementAt(y);
                 buttonlist.Add(tempbutton);
                 LayoutRoot.Children.Add(buttonlist.Last());
@@ -112,28 +109,10 @@ namespace FileBrowser
         public MainWindow()
         {
             ContextMenu buttonContext = new ContextMenu();
+            folderImage.ImageSource = new BitmapImage(new Uri("C:/Users\\Nandan Varma\\Desktop\\csharpfilebrowser\\FileBrowser\\FileBrowser\\images\\folder.png"));
             InitializeComponent();
             titlebar.Text = direct;
-            var dirs = from dir in Directory.EnumerateFileSystemEntries(direct) select dir;
-            Button[] x = new Button[dirs.Count()];
-            folderImage.ImageSource = new BitmapImage(new Uri("C:/Users\\Nandan Varma\\Desktop\\csharpfilebrowser\\FileBrowser\\FileBrowser\\images\\folder.png"));
-            int jump = 30;
-            int down = 0;
-            foreach (int y in Enumerable.Range(0, dirs.Count()))
-            {
-                if (jump > 700)
-                {
-                    jump = 30;
-                    down += 100;
-                }
-                Button tempbutton = Button_creator();
-                Canvas.SetLeft(tempbutton, jump);
-                Canvas.SetTop(tempbutton, down);
-                tempbutton.Content = dirs.ElementAt(y);
-                buttonlist.Add(tempbutton);
-                LayoutRoot.Children.Add(buttonlist.Last());
-                jump += 100;
-            }
+            renderButtons(direct);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
